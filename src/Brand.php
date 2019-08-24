@@ -185,6 +185,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		 * @return bool|string
 		 */
 		protected static function get_logo( $ext ) {
+
 			$url = wp_get_attachment_url( get_theme_mod( 'custom_logo' ) );
 
 			// Check Site Identity.
@@ -206,14 +207,25 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 				return $upload_dir['url'] . '/logo.' . $ext;
 			}
 
-			// Check Theme.
+			// Check theme.
 			if ( file_exists( get_stylesheet_directory() . '/logo.' . $ext ) ) {
 				return get_stylesheet_directory_uri() . '/logo.' . $ext;
 			}
 
-			// Check Theme images folder.
+			// Check theme images folder.
 			if ( file_exists( get_stylesheet_directory() . '/images/logo.' . $ext ) ) {
 				return get_stylesheet_directory_uri() . '/images/logo.' . $ext;
+			}
+
+			// Check theme assets folder.
+			if ( file_exists( get_stylesheet_directory() . '/assets/logo.' . $ext ) ) {
+				return get_stylesheet_directory_uri() . '/assets/logo.' . $ext;
+			}
+
+			// Check args.
+			$args =  self::get_args();
+			if ( isset( $args['logo'] ) ) {
+				return $args['logo'];
 			}
 
 			return false;
@@ -244,6 +256,19 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		 */
 		public static function get_logo_png() {
 			return self::get_logo( 'png' );
+		}
+
+		/**
+		 * Returns instance args.
+		 *
+		 * @param array $args Array of args.
+		 *
+		 * @return mixed
+		 */
+		protected static function get_args( $args = array() ) {
+			$instance = self::get_instance( $args );
+
+			return $instance->args;
 		}
 
 	}
