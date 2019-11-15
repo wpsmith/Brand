@@ -59,7 +59,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 			}
 			add_action( 'login_enqueue_scripts', array( $this, 'login_styles' ) );
 			add_filter( 'login_headerurl', array( __NAMESPACE__ . '\Brand', 'login_headerurl' ) );
-			add_filter( 'login_headertitle', array( __NAMESPACE__ . '\Brand', 'login_headertitle' ) );
+			add_filter( 'login_headertext', array( __NAMESPACE__ . '\Brand', 'login_headertitle' ) );
 		}
 
 		/**
