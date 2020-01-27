@@ -45,7 +45,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		public $args = array();
+		public $args = array(
+			'defaults'    => '',
+			'login_style' => '',
+			'extra_style' => '',
+			'logo'        => '',
+		);
 
 		/**
 		 * Brand constructor.
@@ -55,7 +60,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		protected function __construct( $args = array() ) {
 
 			if ( ! empty( $args ) ) {
-				$this->args = $args;
+				$this->args = wp_parse_args( $args, $this->args );
 			}
 			add_action( 'login_enqueue_scripts', array( $this, 'login_styles' ) );
 			add_filter( 'login_headerurl', array( __NAMESPACE__ . '\Brand', 'login_headerurl' ) );
@@ -77,11 +82,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		/**
 		 *  Returns current home url.
 		 *
-		 * @since 1.0.0
-		 *
 		 * @param string $url URI.
 		 *
 		 * @return string     Blog Title and Description.
+		 * @since 1.0.0
+		 *
 		 */
 
 		/**
@@ -96,8 +101,8 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		/**
 		 * Implodes array to be key=>value string
 		 *
-		 * @param array  $array Array to implode.
-		 * @param string $sep   Seperator.
+		 * @param array $array Array to implode.
+		 * @param string $sep Seperator.
 		 *
 		 * @return string Imploded array.
 		 */
@@ -126,11 +131,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 
 			);
 
-			if ( isset( $this->args['defaults'] ) ) {
-				return wp_parse_args( $this->args['defaults'], $defaults );
-			}
-
-			return $defaults;
+			return wp_parse_args( $this->args['defaults'], $defaults );
 		}
 
 		/**
@@ -152,7 +153,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 
 				$svg = self::get_logo_svg();
 				$svg = $svg ? sprintf( '; background-image: url("%s");', $svg ) : '';
-				$css = sprintf( 'body.login div#login h1 a { %s; }', self::implode( $login_style ) . $svg );
+				$css = sprintf( 'body.login div#login h1 a { %s; }%s', self::implode( $login_style ) . $svg, $args['extra_style'] );
 
 				wp_add_inline_style( 'login', $css );
 
@@ -223,7 +224,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 			}
 
 			// Check args.
-			$args =  self::get_args();
+			$args = self::get_args();
 			if ( isset( $args['logo'] ) ) {
 				return $args['logo'];
 			}
