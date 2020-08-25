@@ -135,22 +135,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		}
 
 		/**
-		 * Determines whether DEBUG is enabled.
-		 */
-		public static function is_debug() {
-			if ( defined( 'SCRIPT_DEBUG' ) ) {
-				return SCRIPT_DEBUG;
-			}
-			return ( defined( 'WP_DEBUG' ) && WP_DEBUG );
-		}
-
-		/**
 		 * Custom inline login styles.
 		 */
 		public function login_styles() {
 
 			$suffix = wp_scripts_get_suffix();
-			if ( !self::is_debug() && file_exists( get_stylesheet_directory() . "/login$suffix.css" ) ) {
+			if ( file_exists( get_stylesheet_directory() . "/login$suffix.css" ) ) {
 
 				wp_enqueue_style(
 					'login-style',
@@ -186,12 +176,12 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		 */
 		public static function is_login_page() {
 			if ( isset( $GLOBALS['pagenow'] ) && '' !== $GLOBALS['pagenow'] ) {
-				return in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ), true );
+				return ( 'wp-login.php' === $GLOBALS['pagenow'] );
 			}
 
 			if ( isset( $_SERVER['REQUEST_URI'] ) && '' !== $_SERVER['REQUEST_URI'] ) {
 				$u = ‌‌wp_parse_url( $_SERVER['REQUEST_URI'] );
-				return in_array( ltrim( $u['path'], '/'), array( 'wp-login.php', 'wp-register.php' ), true );
+				return ( 'wp-login.php' === ltrim( $u['path'], '/' ) );
 			}
 
 			return false;
