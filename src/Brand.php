@@ -135,12 +135,31 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		}
 
 		/**
+		 * Determines whether DEBUG is enabled.
+		 */
+		public static function is_debug() {
+			if ( defined( 'SCRIPT_DEBUG' ) ) {
+				return SCRIPT_DEBUG;
+			}
+			return ( defined( 'WP_DEBUG' ) && WP_DEBUG );
+		}
+
+		/**
 		 * Custom inline login styles.
 		 */
 		public function login_styles() {
 
-			// @todo Check login.css exists in theme, if so load it!
-			if ( ! empty( $this->args ) && isset( $this->args['login_style'] ) && is_string( $this->args['login_style'] ) ) {
+			$suffix = wp_scripts_get_suffix();
+			if ( !self::is_debug() && file_exists( get_stylesheet_directory() . "/login$suffix.css" ) ) {
+
+				wp_enqueue_style(
+					'login-style',
+					get_stylesheet_directory_uri() . "/login$suffix.css",
+					null,
+					filemtime( get_stylesheet_directory() . "/login$suffix.css" )
+				);
+
+			} elseif ( ! empty( $this->args ) && isset( $this->args['login_style'] ) && is_string( $this->args['login_style'] ) && '' !== $this->args['login_style'] ) {
 
 				$css = sprintf( 'body.login div#login h1 a { %s }', $this->args['login_style'] );
 				wp_add_inline_style( 'login', $css );
