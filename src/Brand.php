@@ -158,11 +158,11 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 
 				$defaults = $this->get_defaults();
 
-				$login_style = ! empty( $args ) && is_array( $args['login_style'] ) ? wp_parse_args( $args['login_style'], $defaults ) : $defaults;
+				$login_style = ! empty( $this->args ) && is_array( $this->args['login_style'] ) ? wp_parse_args( $this->args['login_style'], $defaults ) : $defaults;
 
 				$svg = self::get_logo_svg();
 				$svg = $svg ? sprintf( '; background-image: url("%s");', $svg ) : '';
-				$css = sprintf( 'body.login div#login h1 a { %s; }%s', self::implode( $login_style ) . $svg, $args['extra_style'] );
+				$css = sprintf( 'body.login div#login h1 a { %s; }%s', self::implode( $login_style ) . $svg, $this->args['extra_style'] );
 
 				wp_add_inline_style( 'login', $css );
 
