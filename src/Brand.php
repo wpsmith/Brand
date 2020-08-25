@@ -10,7 +10,7 @@
  *
  * @package    WPS\WP
  * @author     Travis Smith <t@wpsmith.net>
- * @copyright  2015-2019 Travis Smith
+ * @copyright  2015-2020 Travis Smith
  * @license    http://opensource.org/licenses/gpl-2.0.php GNU Public License v2
  * @link       https://github.com/wpsmith/WPS
  * @version    1.0.0
@@ -166,7 +166,16 @@ if ( ! class_exists( __NAMESPACE__ . '\Brand' ) ) {
 		 * @since 1.0.0
 		 */
 		public static function is_login_page() {
-			return in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ), true );
+			if ( isset( $GLOBALS['pagenow'] ) && '' !== $GLOBALS['pagenow'] ) {
+				return in_array( $GLOBALS['pagenow'], array( 'wp-login.php', 'wp-register.php' ), true );
+			}
+
+			if ( isset( $_SERVER['REQUEST_URI'] ) && '' !== $_SERVER['REQUEST_URI'] ) {
+				$u = ‌‌wp_parse_url( $_SERVER['REQUEST_URI'] );
+				return in_array( ltrim( $u['path'], '/'), array( 'wp-login.php', 'wp-register.php' ), true );
+			}
+
+			return false;
 		}
 
 		/**
